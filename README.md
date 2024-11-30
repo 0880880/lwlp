@@ -1,33 +1,66 @@
-# Library Template using libGDX and Gradle 8.x
+# Lightweight lexer and parser
+A library for writing lexers and parsers
 
-Change this to fit your library!
+## Lexer:
+```java
+Lexer lexer = new Lexer(
+        new TokenPattern[]{
+                new TokenPattern("[0-9]+", "INT"),
+                new TokenPattern("\\+", "PLUS"),
+                new TokenPattern("\\-", "MINUS"),
+                new TokenPattern("\\*", "MULTIPLY"),
+                new TokenPattern("\\/", "DIVIDE"),
+                new TokenPattern("\\(", "LPAREN"),
+                new TokenPattern("\\)", "RPAREN")
+        }
+);
+```
 
-You'll want to edit gradle.properties to match your library's name, description, author, license, and so on.
-You probably also want to edit build.gradle to match the projectName and group to what you want to use.
+## Parser:
+```java
+Parser parser = new Parser(
+        new Definition("expr",
+                new OrderedMinMatch("expression", 1,
+                        new DefMatch("left", "term"),
+                        MultiMatch.min("add_or_subtract",
+                                new ANDMatch("operation_and_term",
+                                        new ORMatch(
+                                                new TokenMatch("operator", "PLUS"),
+                                                new TokenMatch("operator", "MINUS")
+                                        ),
+                                        new DefMatch("right", "term")
+                                ),
+                                1
+                        )
+                )
+                , true),
+        new Definition("term",
+                new OrderedMinMatch("term_expression", 1,
+                        new DefMatch("left_t", "factor"),
+                        MultiMatch.min("multiply_or_divide",
+                                new ANDMatch("operation_and_factor",
+                                        new ORMatch(
+                                                new TokenMatch("operator", "MULTIPLY"),
+                                                new TokenMatch("operator", "DIVIDE")
+                                        ),
+                                        new DefMatch("right_t", "factor")
+                                ),
+                                1
+                        )
+                )
+                , false),
+        new Definition("factor",
+                new ORMatch(
+                        new TokenMatch("value", "INT"),
+                        new ANDMatch("parentheses_expression",
+                                new TokenMatch("", "LPAREN"),
+                                new DefMatch("expr", "expr"),
+                                new TokenMatch("", "RPAREN")
+                        )
+                )
+                , false)
+);
+```
 
-You should "Find in Files" and search for any places that use the word "template" in order to find anything
-you will want to replace. The search should be case-insensitive.
-
-This includes some extra configuration so that you can deploy more easily to [JitPack](https://jitpack.io). If you're
-testing a specific commit and don't want to push a release to GitHub or Maven Central just to test (especially
-if testing by seeing if a user can build with your library), then JitPack is a great option. It can also be an
-excellent way of making GitHub releases available via Maven or Gradle dependencies. The `jitpack.yml` file this
-includes defaults to Java 17; you can potentially raise this as high as 22, though that might cause problems
-with Kotlin or libraries like Kryo, or as low as 11 (the minimum for the publishing plugin this uses).
-
-Regardless of which JDK version JitPack uses to build, the default sourceCompatibility, targetCompatibility, and
-release are set to JDK 8, which supports many of the most convenient recent Java features, but not all. You can
-increase those to a higher version to get features like `var`, records, pattern matching, etc. but that typically
-will limit your library to being used by desktop builds (LWJGL 2 or 3, server, or headless). Using the language
-level of Java 8 is generally safe, but specific APIs added in Java 8 generally aren't available in RoboVM, GWT,
-or some versions of Android. You can go up to compatibility with 11 to get access to `var`, but then you lose
-all compatibility with RoboVM.
-
-The test code, which goes in `src/test/java/`, uses compatibility with Java 8 by default, so you can use LWJGL3
-in tests out-of-the-box.
-
-This currently uses Gradle 8.x; if you want an earlier version that uses 7.x,
-[here you go](https://github.com/tommyettinger/libgdx-library-template/releases/tag/v7.6)!
-Gradle 8.x seems to be fine for library code, and since approximately the middle of 2023, the tooling seems
-to have finally become capable of handling Gradle 8.x and Android/RoboVM projects. Your Android Gradle Plugin
-version should probably be 8.1.4 at this point; it may be able to go up soon as IDEA gets more support.
+## GWT Support
+Since this library relies on regex, the Lexer class is not compatible with GWT. However, there is a [GWTLexer](https://gist.github.com/0880880/f9d2c903a294cc81d39c3e6d8ed3f964) class that utilizes [RegExodus](https://github.com/tommyettinger/RegExodus).
