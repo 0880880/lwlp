@@ -16,7 +16,7 @@ public class Parser {
     private ArrayList<ParserListener> listeners = new ArrayList<>();
     public boolean useDefaultListener = true;
     private final ParserListener defaultListener = (token, message) -> {
-        throw new RuntimeException(message);
+        throw new RuntimeException(message + " (" + token.toString() + ")");
     };
 
     public Parser(Definition... definitions) {
@@ -32,7 +32,7 @@ public class Parser {
         listeners.clear();
     }
 
-    public Node parse(TokenReader reader) {
+    public ListNode parse(TokenReader reader) {
         this.localOffset = 0;
         this.reader = reader;
         readMode = true;
