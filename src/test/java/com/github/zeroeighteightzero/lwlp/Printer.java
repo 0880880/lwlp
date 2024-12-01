@@ -1,8 +1,6 @@
 package com.github.zeroeighteightzero.lwlp;
 
-import com.badlogic.gdx.utils.reflect.ClassReflection;
-import com.badlogic.gdx.utils.reflect.Field;
-import com.badlogic.gdx.utils.reflect.ReflectionException;
+import java.lang.reflect.Field;
 
 public class Printer {
 
@@ -10,29 +8,30 @@ public class Printer {
         StringBuilder db = new StringBuilder();
         for (int i = 0; i < depth; i++) db.append("    ");
         System.out.println(db + n.name + "@" + n.getClass().getSimpleName() + "   ==> {");
-        Field[] fields = ClassReflection.getFields(n.getClass());
+        Field[] fields = n.getClass().getFields();
         for (int i = 0; i < fields.length; i++) {
             Field f = fields[i];
             Class<?> t = f.getType();
-            if (ClassReflection.isAssignableFrom(Node.class, t)) {
+            if (Node.class.isAssignableFrom(t)) {
                 try {
                     Printer.print((Node) f.get(n), depth + 1);
-                } catch (ReflectionException e) {
+                } catch (IllegalAccessException e) {
                     throw new RuntimeException(e);
                 }
-            } else if (t.isArray() && ClassReflection.isAssignableFrom(Node.class, t.getComponentType())) {
+            } else if (t.isArray() && Node.class.isAssignableFrom(t.getComponentType())) {
+                Node[] array;
                 try {
-                    Node[] array = (Node[]) f.get(n);
-                    for (Node item : array) {
-                        Printer.print(item, depth + 1);
-                    }
-                } catch (ReflectionException e) {
+                    array = (Node[]) f.get(n);
+                } catch (IllegalAccessException e) {
                     throw new RuntimeException(e);
+                }
+                for (Node item : array) {
+                    Printer.print(item, depth + 1);
                 }
             } else {
                 try {
                     System.out.println(db + "    " + f.getName() + "@" + f.getType().getSimpleName() + "  : " + f.get(n));
-                } catch (ReflectionException e) {
+                } catch (IllegalAccessException e) {
                     throw new RuntimeException(e);
                 }
             }
