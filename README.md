@@ -62,5 +62,11 @@ Parser parser = new Parser(
 );
 ```
 
+## Examples
+- A basic math lexer, parser, and interpreter example [MathTest](https://github.com/0880880/lwlp/blob/main/src/test/java/com/github/zeroeighteightzero/lwlp/MathTest.java)
+- A basic CSS lexer, and parser example [CSSTest](https://github.com/0880880/lwlp/blob/main/src/test/java/com/github/zeroeighteightzero/lwlp/CSSTest.java)
+
 ## GWT Support
 Since this library relies on regex, the Lexer class is not compatible with GWT. However, there is a [GWTLexer](https://gist.github.com/0880880/f9d2c903a294cc81d39c3e6d8ed3f964) class that utilizes [RegExodus](https://github.com/tommyettinger/RegExodus).
+
+This project is licensed under the MIT License.
