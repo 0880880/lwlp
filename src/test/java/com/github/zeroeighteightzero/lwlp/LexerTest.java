@@ -1,17 +1,19 @@
 package com.github.zeroeighteightzero.lwlp;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LexerTest {
 
     private void assertTokens(Lexer lexer, String input, String... expectedTokens) {
         List<Token> tokens = lexer.lex(input);
-        assertEquals("Token count mismatch", expectedTokens.length, tokens.size());
+        assertEquals(expectedTokens.length, tokens.size(), "Token count mismatch");
 
         for (int i = 0; i < expectedTokens.length; i++) {
-            assertEquals("Token type mismatch at index " + i, expectedTokens[i], tokens.get(i).getType());
+            assertEquals(expectedTokens[i], tokens.get(i).getType(), "Token type mismatch at index " + i);
         }
     }
 
