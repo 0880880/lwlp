@@ -70,8 +70,8 @@ public class Parser {
         return program;
     }
 
-    public void parse(List<Token> tokens) {
-        parse(new TokenReader(tokens.toArray(new Token[0])));
+    public ListNode parse(List<Token> tokens) {
+        return parse(new TokenReader(tokens.toArray(new Token[0])));
     }
 
     public Token read(int offset) {
