@@ -1,6 +1,6 @@
 package com.github.zeroeighteightzero.lwlp;
 
-class TokenPattern {
+public class TokenPattern {
     public final String regex;
     public final String name;
     public String contentGroup;
