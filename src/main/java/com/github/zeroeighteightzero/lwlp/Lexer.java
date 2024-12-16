@@ -28,12 +28,17 @@ public class Lexer {
 
     }
 
+    public Pattern getRegex() {
+        return regex;
+    }
+
     public List<Token> lex(String source) {
 
         source = source.replaceAll("//[^\\n]*|/\\*[\\s\\S]*?\\*/", "");
         Matcher matcher = regex.matcher(source);
 
         ArrayList<Token> tokens = new ArrayList<>();
+        int lastMax = 0;
 
         while (matcher.find()) {
             for (int i = 1; i <= matcher.groupCount(); i++) {
@@ -42,11 +47,12 @@ public class Lexer {
                     for (TokenPattern tokenPattern : patterns) {
                         Pattern p = Pattern.compile(tokenPattern.regex);
                         Matcher m = p.matcher(tokenValue);
-                        if (m.find()) {
+                        if (m.find() && matcher.start() >= lastMax) {
                             String c = tokenValue;
                             if (tokenPattern.contentGroup != null) c = m.group(c);
+                            lastMax = matcher.end(i);
                             Token token = new Token(tokenPattern.name, c, matcher.start(i), matcher.end(i)); // FIXME: Start and end don't have correct values when customGroup is set.
-                            tokens.add(token);
+                            if (!tokenPattern.ignore) tokens.add(token);
                             break;
                         }
                     }
