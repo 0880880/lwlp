@@ -4,6 +4,7 @@ class TokenPattern {
     public final String regex;
     public final String name;
     public String contentGroup;
+    public boolean ignore;
 
     public TokenPattern(String regex, String name) {
         this.regex = regex;
@@ -15,4 +16,10 @@ class TokenPattern {
         this.name = name;
         this.contentGroup = contentGroup;
     }
+
+    public TokenPattern ignore() {
+        this.ignore = true;
+        return this;
+    }
+
 }
