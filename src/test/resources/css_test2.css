@@ -1,0 +1,1 @@
+a.link:hover { color: blue; } a.link::after { color: red; } div.container::before { font-weight: bold; } a.link:hover:active { background-color: yellow; } a.link:hover::after { font-style: italic; } p.text:hover { background-color: lightgray; } div.container:hover:active { background-color: lightblue; }
